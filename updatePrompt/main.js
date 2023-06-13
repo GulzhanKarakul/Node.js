@@ -13,7 +13,7 @@ process.stdin.on('data', (data) => {
     // process.kill(); //Убийство процесса
     process.stdin.pause(); //Пауза процесса
     user_as
-});jbvn
+});
 
 
 setTimeout(() => {
