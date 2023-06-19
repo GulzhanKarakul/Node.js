@@ -12,5 +12,7 @@ export function prompt(message) {
         process.stdin.on('error', (err) => {
             reject(err);
         });
+
+        process.stdin.resume();
     });
 }

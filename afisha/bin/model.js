@@ -4,6 +4,7 @@ export class Database{
     db = null; 
     constructor(config){ 
         this.config =config; 
+        this.searchResult = [];
     } 
  
     async start(){ 
@@ -73,5 +74,49 @@ export class Database{
         query = "SELECT * FROM Events";  
         rows = await this.db.all(query);  
         console.log("Эвенты",rows);  
-    } 
+    }
+
+    async addUser(data){
+        let keys = [];
+        let values = [];
+        for(let i in data){
+            keys.push(i);
+            values.push(data[i]);
+        }
+
+        let  query = `INSERT INTO Users (${keys.join(',')}) VALUES(  
+            ${values.join(',')}  
+            )`; 
+        
+        try{await this.db.exec(query); } 
+        catch { console.log('Такой пользователь уже есть!');} 
+    }
+
+    async addEvent(data){
+        let keys = [];
+        let values = [];
+        for(let i in data){
+            keys.push(i);
+            values.push(data[i]);
+        }
+
+        let  query = `INSERT INTO Events (${keys.join(',')}) VALUES(  
+            ${values.join(',')}  
+            )`; 
+        
+        try{await this.db.exec(query); } 
+        catch { console.log('Такой пользователь уже есть!');} 
+    }
+
+    async getEvent(city, date){
+        query = "SELECT * FROM Events";  
+        rows = await this.db.all(query);  
+        
+        for(let event of rows){
+            if(event.city === city && event.date === date){
+                this.searchResult.push(event);
+                log(this.searchResult);
+            }
+        }
+    }
 }
