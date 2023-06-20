@@ -30,7 +30,7 @@ process.stdin.on('data', (buffer) => {
             for(let x of fileList){
                 log(x);
             }
-        })
+        });
     }
     // process.exit(); //Выход из процесса
     // process.kill(); //Убийство процесса
