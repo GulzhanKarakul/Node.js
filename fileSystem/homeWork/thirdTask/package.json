@@ -1,15 +1,12 @@
 {
-  "name": "filesistem",
+  "name": "thirdtask",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "xml2js": "^0.6.0"
-  }
+  "license": "ISC"
 }

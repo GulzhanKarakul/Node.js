@@ -1,14 +1,12 @@
-import TelegramBot from "node-telegram-bot-api"; 
-import fs from "fs"; 
-import { Database } from "sqlite-async"; 
-const log = console.log;
-
-import { Aplication  } from "./bin/app.js";
+import { Application  } from "./bin/app.js";
 import ini from 'ini';
+import fs from "fs"; 
+
+const log = console.log;
 
 const cfg_file = fs.readFileSync('./config.ini', 'utf8');
 const config = ini.parse(cfg_file);
-log(config);
+// log(config);
 
-const app = new Aplication(config);
+const app = new Application(config);
 app.start();

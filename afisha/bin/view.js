@@ -1,17 +1,96 @@
-import TelegramBot from "node-telegram-bot-api"; 
+import TelegramBot from "node-telegram-bot-api";
+import Event from "events";
+const EventEmitter = Event.EventEmitter;
 
-export class Telegram {
+const log = console.log;
+
+
+export class Telegram extends EventEmitter {
+    users = {"id":{state: "", eventData: {}, chatId: 0}};
+
     constructor(config){
+        super();
         this.config = config;
+        this.bot = new TelegramBot(config.token, {polling: true});
+        this.users = {};
     }
 
     start() {
-        this.bot = new TelegramBot(this.config.token, {polling: true});
-
+        this.textHandler = this._textHandler.bind(this);
+        this.buttonHandler = this._buttonHandler.bind(this);
+        this.bot.on('text', this.textHandler);
+        this.bot.on('callback_query', this.buttonHandler);
+        
     }
 
     stop() {
+        this.bot.off('text', this.textHandler);
+        this.bot.off('callback_query', this.buttonHandler);
 
+    }
+    process(user, message){
+        switch(state){
+            case 'wait_command':
+                if(message == "find_events"){
+                    this.bot.sendMessage(user.chatId,"Which city?");
+                    user.state = "wait_city";
+                }
+                else if(message == "create_events") {
+
+                }
+            break;
+
+            case "wait_city":
+                user.event.city = message;
+                this.bot.sendMessage(user.chatId,"Which city?");
+                user.state = "wait_city";
+            break;
+
+            case "wait_date":
+                user.event.date = message;
+                this.bot.sendMessage(user.chatId,"Wait a minute!");
+                user.state = null;
+            break;
+        }
+    }
+    _textHandler(message){
+        let user = this.users[''+message.chat_id];
+        switch(message.text) {
+            case("\start"):
+                this.users[''+message.chat_id] = 
+                        {state: "wait_command", event: {}, chatId: message.chat_id};
+                this.bot.sendMessage(message.chat.id,"Hello! What you want to do?",{
+                                reply_markup:{
+                                    inline_keyboard:[
+                                        [{text:'Look for Events',callback_data:'find_events'},
+                                         {text:'Create Event',callback_data:'create_events'},
+                                        ],
+                                    ]
+                                }
+                });
+            break;
+
+            default: 
+                if(user){
+                    this.process(user, message.text);
+                }else {
+                    bot.sendMessage(user.chatId,"Please, write \\start");
+                }
+
+        }
+
+    }
+
+    _buttonHandler(message){
+        let user = this.users[''+message.chat_id];
+        switch(message.data){
+            case "find_events":
+                this.process(user, "find_events");
+            break;
+            case "create_events": 
+                this.process(user, "create_events");
+            break;
+        }
     }
 }
 

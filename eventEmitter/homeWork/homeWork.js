@@ -1,5 +1,6 @@
 const log = console.log;
-const EventEmitter = require("events").EventEmitter;
+import Event from "events";
+const EventEmitter = Event.EventEmitter;
 
 class UserInputEmitter extends EventEmitter {
     constructor(){
