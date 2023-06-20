@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<book>
+  <title>The Great Gatsby</title>
+  <author>F. Scott Fitzgerald</author>
+  <year>1925</year>
+  <publisher>
+    <location>New York</location>
+  </publisher>
+</book>
