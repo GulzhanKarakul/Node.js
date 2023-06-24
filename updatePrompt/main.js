@@ -12,7 +12,6 @@ process.stdin.on('data', (data) => {
     // process.exit(); //Выход из процесса
     // process.kill(); //Убийство процесса
     process.stdin.pause(); //Пауза процесса
-    user_as
 });
 
 
