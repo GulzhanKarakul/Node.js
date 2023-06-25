@@ -17,8 +17,14 @@ const parser = new xml2js.Parser();
 const builder = new xml2js.Builder();
 const args = process.argv.slice(2);
 
+// VN: лучше сразу достать sourceFName и destinFName из массива args
+// Иначе строк через 50 запись args[1] уже перестанет быть лёгкой для чтения.
+// И sourceType, destinType тоже можно сразу достать
+
 let sourceFNameArray = args[0].split('.');
 let destinFNameArray = args[1].split('.');
+
+// VN: здесь притаилась опсность: а что если файл будет называться, например, так: local.users.exported_01.json
 
 if(sourceFNameArray[1] === 'json' && 
    destinFNameArray[1] === 'xml')
