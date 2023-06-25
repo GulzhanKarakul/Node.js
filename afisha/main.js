@@ -1,10 +1,8 @@
-import { Application  } from "./bin/app.js";
+import { Application } from "./bin/app.js";
+import fs from 'fs';
 import ini from 'ini';
-import fs from "fs"; 
 
-const log = console.log;
-
-const cfg_file = fs.readFileSync('./config.ini', 'utf8');
+const cfg_file = fs.readFileSync("./config.ini", "utf-8");
 const config = ini.parse(cfg_file);
 
 const app = new Application(config);

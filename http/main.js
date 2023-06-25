@@ -56,4 +56,4 @@ server.listen(3000, () => {
     console.log("server is runnning port 3000"); 
 })
 
-//http://locAlhost:300
+//http://locAlhost:3000

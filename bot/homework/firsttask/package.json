@@ -1,16 +1,17 @@
 {
-  "name": "bot",
+  "name": "firsttask",
   "version": "1.0.0",
   "main": "main.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-telegram-bot-api": "^0.61.0",
-    "sqlite-async": "^1.2.0"
+    "node-telegram-bot-api": "^0.61.0"
   },
+  "devDependencies": {},
   "description": ""
 }

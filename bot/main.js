@@ -2,7 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import fs from "fs"; 
 import { Database } from "sqlite-async"; 
 
-// const log = console.log;
+const log = console.log;
  
 // const db = await Database.open('./data.sql3'); 
  
@@ -84,25 +84,43 @@ bot.on('text', (msg) => {
 
 
 
-    // const resp = match[1]; // the captured "whatever"
+    const resp = match[1]; // the captured "whatever"
   
-    // // send back the matched "whatever" to the chat
-    // bot.sendMessage(chatId, resp);
+    // send back the matched "whatever" to the chat
+    bot.sendMessage(chatId, resp);
 });
 
 
-bot.on("callback_query", msg => {
+bot.on("callback_query", (msg) => {
     log(msg);
+
+    const messageId = msg.message.message_id; // Идентификатор сообщения, на которое была нажата кнопка
+    const chatId = msg.message.chat.id; // Идентификатор чата пользователя
+
+    switch (msg.data) {
+        case 'ToRight':
+            let response = `Право`;
+            bot.sendMessage(chatId, response);
+            break;
+        case 'ToLeft':
+            response = `Лево`;
+            bot.sendMessage(chatId, response);
+            break;
+        case 'Down':
+            response = `Вниз`;
+            bot.sendMessage(chatId, response);
+            break;
+    }
 });
 
-bot.on('photo', msg => {
-    let file_id = msg.photo[msg.photo.length -1].file_id;
-    log(msg);
-    bot.downloadFile(file_id, './img')
-    .then(() => {
-                bot.sendMessage(msg.file_id, 'Done!');
-        })
-})
+// bot.on('photo', msg => {
+//     let file_id = msg.photo[msg.photo.length -1].file_id;
+//     log(msg);
+//     bot.downloadFile(file_id, './img')
+//     .then(() => {
+//                 bot.sendMessage(msg.file_id, 'Done!');
+//         })
+// })
 
 // bot.on("sticker", msg => {
 //     // log(msg);
@@ -113,3 +131,34 @@ bot.on('photo', msg => {
 //         bot.sendMessage(msg.file_id, 'Done!');
 //       })
 // });
+
+// {
+//     id: '8464254596929247968',
+//     from: {
+//       id: 6265705141,
+//       is_bot: false,
+//       first_name: 'Gulzhan',
+//       username: 'gulzhankarakul',
+//       language_code: 'en'
+//     },
+//     message: {
+//       message_id: 74,
+//       from: {
+//         id: 6035247543,
+//         is_bot: true,
+//         first_name: 'Are You Amir in your Live?',
+//         username: 'best_programmer_Amir_bot'
+//       },
+//       chat: {
+//         id: 6265705141,
+//         first_name: 'Gulzhan',
+//         username: 'gulzhankarakul',
+//         type: 'private'
+//       },
+//       date: 1687614736,
+//       text: 'Вот твое меню',
+//       reply_markup: { inline_keyboard: [Array] }
+//     },
+//     chat_instance: '-5380958907582531003',
+//     data: 'Down'
+//   }

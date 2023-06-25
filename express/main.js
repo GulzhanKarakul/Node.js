@@ -2,7 +2,7 @@ import express from "express";
 import path from 'path';
 
 const __dirname = process.cwd();
-const log = console.log;
+    const log = console.log;
 
 log(__dirname);
 

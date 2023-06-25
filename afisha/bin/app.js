@@ -9,7 +9,7 @@ export class Application {
     }
 
     async start() {
-        await this.view.start();
+        this.view.start();
         await this.model.start();
         await this.model.test();
 
