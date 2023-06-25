@@ -27,6 +27,7 @@ export function prompt(message, defaultValue) {
                 result = input.trim();
                 //Я НЕ ЗНАЮ ПОЧЕМУ НЕ УБИРАЮТСЯ СКОБКИ, КОГДА Я С join(', '); ДЕЛАЮ В СТРОКУ(((
                 // result = result.join(', ');
+                // VN: по идее, здесь нужен split
                 if (result.length === 1 && result[0] === '') {
                     result = defaultValue;
                 }
