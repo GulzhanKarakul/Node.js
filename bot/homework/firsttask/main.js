@@ -59,32 +59,28 @@ let lastMessageId;
 
 // Функция для получения данных о погоде
 async function getWeatherData(city, chatId) {
-    try {
-        const keyWeather = '7fb9c01e51ad4223a93101522230905';
-        const getUrl = `http://api.weatherapi.com/v1/forecast.json?key=${keyWeather}&q=${city}&days=10&aqi=no&alerts=no&lang=ru`;
-        const getResponse = await fetch(getUrl);
-        const apiResponse = await getResponse.json();
-        arrOfThreeDaysWeather = apiResponse.forecast.forecastday;
-        let response = getCurrTimeWeather(apiResponse);
+    const keyWeather = '7fb9c01e51ad4223a93101522230905';
+    const getUrl = `http://api.weatherapi.com/v1/forecast.json?key=${keyWeather}&q=${city}&days=10&aqi=no&alerts=no&lang=ru`;
+    const getResponse = await fetch(getUrl);
+    const apiResponse = await getResponse.json();
+    arrOfThreeDaysWeather = apiResponse.forecast.forecastday;
+    let response = getCurrTimeWeather(apiResponse);
 
-        bot.sendMessage(chatId, response,{
-                            parse_mode: "HTML",
-                            reply_markup:{
-                                inline_keyboard:[
-                                    [{text:'За Три дня',callback_data:'threedays'}]
-                                ]
-                            }
-                    })
-                    .then((sentMessage) => {
-                        // Сохраняю айди сообщения, которое нужно удалить
-                        lastMessageId = sentMessage.message_id; 
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-    } catch (error) {
-        console.error(error);
-    }
+    bot.sendMessage(chatId, response,{
+                        parse_mode: "HTML",
+                        reply_markup:{
+                            inline_keyboard:[
+                                [{text:'За Три дня',callback_data:'threedays'}]
+                            ]
+                        }
+                })
+                .then((sentMessage) => {
+                    // Сохраняю айди сообщения, которое нужно удалить
+                    lastMessageId = sentMessage.message_id; 
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
 }
 
 // Функция для удаления сообщения

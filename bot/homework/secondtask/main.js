@@ -30,9 +30,7 @@ bot.on('message', (message) => {
         } 
     } else {
         // Проверяю isBotStarted = true или нет
-        if (isBotStarted) {
-
-        } else {
+        if (!isBotStarted) {
             // Ответ, если не было выполнено начало работы
             try {
                 bot.sendMessage(chatId, "Сначала напишите /start");
@@ -46,19 +44,38 @@ bot.on('message', (message) => {
 // Отзыв на кнопки
 bot.on("callback_query", (msg) => {
     const chatId = msg.message.chat.id;
+    let readingFile;
 
     log(msg.data)
     fs.readFile(`./quests/${msg.data}`, 'utf8', (err, data) => {
         if(err) throw err;
         data = JSON.parse(data);
+        readingFile = data;
+        log(readingFile.game_info.NAME);
 
-        log(data.game_info);
-    });
+        try {
+            let response = ` Квест: ${readingFile.game_info.NAME}\n Автор: ${readingFile.game_info.AUTHOR}\n Версия: ${readingFile.game_info.VERSION}\n` ;
+            bot.sendMessage(chatId, response,{
+                            reply_markup:{
+                                inline_keyboard: [
+                                    [
+                                        {text:'Старт',callback_data:'/start'},
+                                        {text:'Назад',callback_data:'/back'}
+                                    ],
+                                ]
+                            }
+            });
+            // Установка флага начала работы бота
+            isBotStarted = true;
+        } catch (error) {
+            console.error(error);
+        } 
+    });  
+
 });
 
 const questDirectory = './quests';
 let questFilesArr = [];
-let questFilesNames = [];
 fs.readdir(questDirectory, (err, files) => {
     if (err) {
         console.error('Ошибка чтения каталога:', err);
@@ -68,7 +85,6 @@ fs.readdir(questDirectory, (err, files) => {
     for (let x of files) {
         let fileName = x.slice(0, x.length - 5);
         let objectForKeyboard = [{text: fileName,callback_data: x}];
-        questFilesNames.push(fileName);
         questFilesArr.push(objectForKeyboard);
     }
 });

@@ -37,10 +37,11 @@ export class Database {
             date            text not null,
             time            text,
             type            text,
-            isRegular       integer,
+            isRegular       text,
             price           text,
             contact         text,
             org_id          integer not null,
+            contact_name    text not null,  
             poster_url      text  
         )`;
         await this.db.exec(query);
@@ -50,17 +51,32 @@ export class Database {
         let query = `INSERT INTO Users (name, telegram_id, chat_id, telegram_url) VALUES (
             ?, ?, ?, ?)`;
         try {await this.db.run(query, name, telegram_id, chat_id, telegram_url);}
-        catch { log("Такой пользователь уже есть"); }
+        catch { 
+            log("Такой пользователь уже есть"); 
+        }
     }
 
-
-    async addEvent(name, city, date, org_id, isRegular, address = '', poster_url = '',time = '', price = '', contact = '') {
-        let query = `INSERT INTO Events (name, city, date, org_id, isRegular, address, poster_url, time, price, contact) VALUES ( ?,?,?,?,?,?,?,?,?,? )`;
-        try { await this.db.run(query,[name,city,date,org_id,isRegular,address,poster_url,time,price,contact]); }
-        catch { log("Такое событие уже есть"); }
+    async getUser(chat_id){
+        let query = `SELECT * FROM Users WHERE chat_id=?`;
+        try { return await this.db.all(query, chat_id); }
+        catch {
+             log("Что-то не так с запросом getEvent"); 
+             return false;
+        }
     }
 
-    async getEvent(city, date) {
+    async addEvent(name, city, date, org_id, contact_name='', isRegular = '', address = '', poster_url = '',time = '', price = '', contact = '') {
+        let query = `INSERT INTO Events (name, city, date, org_id,contact_name, isRegular, address, poster_url, time, price, contact) VALUES ( ?,?,?,?,?,?,?,?,?,?,? )`;
+        try {
+            await this.db.run(query, [name, city, date, org_id, contact_name, isRegular, address, poster_url, time, price, contact]);
+        } catch (error) {
+            console.log("Такое событие уже есть");
+            return false;
+        }
+        
+    }
+
+    async getEvent(city, date) {``
         let query = `SELECT * FROM Events WHERE city=? AND date=?`;
         try { return await this.db.all(query, city, date); }
         catch { log("Что-то не так с запросом getEvent"); }
@@ -68,7 +84,7 @@ export class Database {
 
     async test() {
         this.addUser(5466501, 1480585, "Gulzhan");
-        this.addEvent('Пример','Almaty','12-01-2024',12312,0,'abay');
+        this.addEvent('Пример','Almaty','12-01-2024',12312,0,'gulzhankarakul', '', 'Bar JJ', './img/img.jpg');
        
         let query = "SELECT * FROM Users";
         let rows = await this.db.all(query);

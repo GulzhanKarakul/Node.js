@@ -1,5 +1,6 @@
 import { Database } from "./model.js";
 import { Telegram } from "./view.js";
+const log = console.log;
 
 export class Application {
     constructor(config) {
@@ -11,11 +12,35 @@ export class Application {
     async start() {
         this.view.start();
         await this.model.start();
-        await this.model.test();
+        // await this.model.test();
 
         this.view.on('search', async (id,city, date) => {
             let response = await this.model.getEvent(city, date);
             this.view.sendEvents(id,response);
+            // log(this.view.lastMessageId);
+            // this.view.deleteLastMessage(id);
+        });
+
+        this.view.on('addEvent', async (id,event, user) => {
+            const eventValues = Object.values(event);
+            await this.model.addEvent(...eventValues);
+            
+            let resp = await this.model.getUser(id);
+            
+            log('respUser '+resp.join('-'));
+            log('событие '+eventValues);
+            if(!resp.join()){
+                
+                const userValues = Object.values(user);
+                log('user'+userValues);
+                await this.model.addUser(...userValues);
+            }
+
+            let response = await this.model.getEvent(event.city, event.date);
+            this.view.sendEvents(id,response)
+
+            // log(this.view.lastMessageId);
+            // this.view.deleteLastMessage(id);
         });
     }
 
@@ -25,3 +50,9 @@ export class Application {
     }
 }
 
+class User {
+    telegram_id = null;
+    chat_id = null;
+    name = '';
+    telegram_url = '';
+}
