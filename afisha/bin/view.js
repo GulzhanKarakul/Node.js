@@ -39,6 +39,7 @@ export class Telegram extends EventEmitter {
     stop() {
         this.bot.off('text', this.textHandler);
         this.bot.off('callback_query', this.buttonHandler);
+        this.bot.off('photo', this.photoHandler);
     }
 
     process(user, message) {
@@ -86,6 +87,7 @@ export class Telegram extends EventEmitter {
                                             });
                     user.state = null;
                     this.emit('search',user.chatId, user.event.city, user.event.date);
+                    // user.state = 'wait_start';
                 } else {
                     user.event.org_id = user.chatId;
                     user.event.contact_name = user.current_user.telegramUrl;
@@ -126,12 +128,27 @@ export class Telegram extends EventEmitter {
                 break;
 
             case "wait_contact":
-                user.event.price = message;
-                this.bot.sendMessage(user.chatId, 'Событие записано!');
-                log(user);
+                user.event.contact = message;
                 user.state = null;
+                this.bot.sendMessage(user.chatId, 'Событие записано!');
                 this.emit('addEvent',user.chatId, user.event, user.current_user);
-                break; 
+                // user.state = 'wait_start';
+                break;
+
+            // case "wait_start":
+            //     this.users[""+user.chatId] = 
+            //               {state:"wait_command", event: {}, chatId: user.chatId};
+            //     this.bot.sendMessage(user.chatId, `Хотите еще что-то сделать?`, {
+            //         reply_markup: {
+            //             inline_keyboard: [
+            //                 [
+            //                     {text: "Узнать о событиях", callback_data: "find_events"},
+            //                     {text: "Создать событие", callback_data: "create_event"},
+            //                 ]
+            //             ]
+            //         }
+            //     });
+            //     break;
         }
     }
 
@@ -140,9 +157,7 @@ export class Telegram extends EventEmitter {
             case "/start":
                 this.users[""+message.chat.id] = 
                           {state:"wait_command", event: {}, chatId: message.chat.id};
-                this.users
-                this.bot.sendMessage(message.chat.id, `Здравствуйте,
-                что хотите сделать?`, {
+                this.bot.sendMessage(message.chat.id, `Здравствуйте, что хотите сделать?`, {
                     reply_markup: {
                         inline_keyboard: [
                             [
@@ -202,7 +217,7 @@ export class Telegram extends EventEmitter {
                 // Отправка сообщения с изображением
                 await this.bot.sendPhoto(chatId, image, {
                     caption: response,
-                    parse_mode: "HTML"
+                    parse_mode: "HTML",
                 });
             }
         }

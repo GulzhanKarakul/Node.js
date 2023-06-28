@@ -26,13 +26,9 @@ export class Application {
             await this.model.addEvent(...eventValues);
             
             let resp = await this.model.getUser(id);
-            
-            log('respUser '+resp.join('-'));
-            log('событие '+eventValues);
             if(!resp.join()){
                 
                 const userValues = Object.values(user);
-                log('user'+userValues);
                 await this.model.addUser(...userValues);
             }
 
