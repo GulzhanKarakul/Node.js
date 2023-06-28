@@ -15,7 +15,7 @@ export class Application {
         // await this.model.test();
 
         this.view.on('search', async (id,city, date) => {
-            let response = await this.model.getEvent(city, date);
+            let response = await this.model.getEvents(city, date);
             this.view.sendEvents(id,response);
             // log(this.view.lastMessageId);
             // this.view.deleteLastMessage(id);
@@ -36,7 +36,7 @@ export class Application {
                 await this.model.addUser(...userValues);
             }
 
-            let response = await this.model.getEvent(event.city, event.date);
+            let response = await this.model.getYourOneEvent(event.city, event.date, event.name);
             this.view.sendEvents(id,response)
 
             // log(this.view.lastMessageId);

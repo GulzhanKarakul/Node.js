@@ -76,9 +76,15 @@ export class Database {
         
     }
 
-    async getEvent(city, date) {``
+    async getEvents(city, date) {``
         let query = `SELECT * FROM Events WHERE city=? AND date=?`;
         try { return await this.db.all(query, city, date); }
+        catch { log("Что-то не так с запросом getEvent"); }
+    }
+
+    async getYourOneEvent(city, date, name) {``
+        let query = `SELECT * FROM Events WHERE city=? AND date=? AND name=?`;
+        try { return await this.db.all(query, city, date, name); }
         catch { log("Что-то не так с запросом getEvent"); }
     }
 
