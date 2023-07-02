@@ -83,9 +83,36 @@ function handleGetRequest( req ,res) {
         case "/favicon.ico":
             data = fs.readFileSync("./public/favicon.ico");
             response.statusCode = 200;
+        // VN: ^^^^^^ response is not defined!  И сервер падает. Надо заменить на res
             response.setHeader("Content-Type", "image/x-icon");
             response.write(data);
             break;
+        /* VN:
+        case "/index.css":         // можно по аналогии с favicon.ico
+            data = fs.readFileSync("./public/index.css");
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/css");
+            res.write(data);
+            break;
+        
+        Но можно в самом начале switch сделать обработку статических маршрутов очень простым образом:
+        const extension = path.extname(currentUrl.pathname);
+        if (extension) {
+            // смотрим, есть ли такой файл: `/public${currentUrl.pathname}`
+            // если есть, читаем его, выставляем Content-Type и отправляем:
+                switch (extension) {
+                    case '.js':
+                        res.setHeader("Content-Type", "text/javascript");
+                        break;
+                    case '.css':
+                        ...
+                }
+                res.statusCode = 200;
+                res.write(data);
+            }
+        }
+        И лучше эту штуку вынести в отдельную функцию
+        */
         default: 
         res.statusCode = 404;
         res.statusMessage = "Not Found";
