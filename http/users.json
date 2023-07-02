@@ -1,23 +1,42 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "name": "John Doe",
-        "age": 30,
-        "email": "johndoe@example.com"
-      },
-      {
-        "id": 2,
-        "name": "Jane Smith",
-        "age": 25,
-        "email": "janesmith@example.com"
-      },
-      {
-        "id": 3,
-        "name": "Alex Johnson",
-        "age": 35,
-        "email": "alexjohnson@example.com"
-      }
-    ]
-  }
-  
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "age": 30,
+      "email": "johndoe@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "age": 25,
+      "email": "janesmith@example.com"
+    },
+    {
+      "id": 3,
+      "name": "Alex Johnson",
+      "age": 35,
+      "email": "alexjohnson@example.com"
+    },
+    {
+      "name": "Гульжан ",
+      "email": "karakulgulzhan@gmail.com",
+      "password": "12345"
+    },
+    {
+      "name": "Гульжан ",
+      "email": "karakulgulzhan@gmail.com",
+      "password": "12345"
+    },
+    {
+      "name": "Гульжан ",
+      "email": "karakulgulzhan@gmail.com",
+      "password": "1234"
+    },
+    {
+      "name": "sad",
+      "email": "123@gmail.com",
+      "password": "123"
+    }
+  ]
+}
