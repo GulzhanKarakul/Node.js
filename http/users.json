@@ -37,6 +37,11 @@
       "name": "sad",
       "email": "123@gmail.com",
       "password": "123"
+    },
+    {
+      "name": "Гульжан ",
+      "email": "karakulgulzhan@gmail.com",
+      "password": "12"
     }
   ]
 }

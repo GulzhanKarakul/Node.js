@@ -82,10 +82,10 @@ function handleGetRequest( req ,res) {
             break;
         case "/favicon.ico":
             data = fs.readFileSync("./public/favicon.ico");
-            response.statusCode = 200;
+            res.statusCode = 200;
         // VN: ^^^^^^ response is not defined!  И сервер падает. Надо заменить на res
-            response.setHeader("Content-Type", "image/x-icon");
-            response.write(data);
+            res.setHeader("Content-Type", "image/x-icon");
+            res.write(data);
             break;
         /* VN:
         case "/index.css":         // можно по аналогии с favicon.ico
