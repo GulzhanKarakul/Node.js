@@ -10,7 +10,7 @@ const app = express();
 app.use(express.static("public") );
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     let file = path.join(__dirname, '/public/index.html');
     res.sendFile(file);
     // res.end();
