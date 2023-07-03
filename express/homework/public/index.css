@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #012871;
+    background: #aab7d0;
 }
 
 .cont {
@@ -16,9 +16,13 @@ body {
     left: 50%;
     /* margin: 0 auto; */
     transform: translate(-50%, -50%);
-    background: #83b0b8;
+    background: #71abde;
     padding: 50px;
     text-align: center;
+}
+
+h1, h2 {
+    margin: 7px;
 }
 
 a {
@@ -38,6 +42,10 @@ input {
     padding: 10px 25px;
     border-radius: 10px;
     
+}
+
+input[type="submit"] {
+    margin-top: 20px
 }
 
 label {

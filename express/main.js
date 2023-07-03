@@ -6,17 +6,23 @@ const __dirname = process.cwd();
 
 log(__dirname);
 
-const app = express()
+const app = express();
+app.use(express.static("public") );
+
 
 app.get('/', (req, res) => {
-    // let file = path.join(__dirname, 'index');
-    res.sendFile(path.join(__dirname, 'index.html'));
+    let file = path.join(__dirname, '/public/index.html');
+    res.sendFile(file);
     // res.end();
 });
 
-// app.get('/', function (req, res) {
-//     res.send('Hello World');
-// });
+
+// Error function
+function handleError(err, response) {
+    response.writeHead(500, { "Content-Type": "text/html; charset=utf-8"});
+    response.write(`<h1>Error: ${err.message}</h1>`, "utf-8");
+    response.end();
+}
 
 app.listen(3000, () => {
     console.log("server is runnning port 3000"); 
