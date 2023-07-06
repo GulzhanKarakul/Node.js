@@ -2,48 +2,62 @@ import { Database } from 'sqlite-async';
 const log = console.log;
 
 export class DataStorage {
-    constructor(databaseFile) {
-        this.databaseFile = databaseFile;
+    db = null;
+
+    constructor(config) {
+        this.config = config;
     }
 
     async start() {
-        this.db = await Database.open(this.databaseFile);
-        await this.createUsers();
+        try {
+            this.db = await Database.open(this.config.file);
+            await this.createUsers();
+        } catch (error) {
+            console.error("Ошибка при запуске базы данных:", error);
+        }
     }
 
     async stop() {
-        await this.db.close();
+        try {
+            await this.db.close();
+        } catch (error) {
+            console.error("Ошибка при остановке базы данных:", error);
+        }
     }
 
     async createUsers() {
-        let query = `CREATE TABLE IF NOT EXISTS Users (
-            id              integer primary key autoincrement,
-            login           text not null,
-            password        text not null,
-            email           text,
+        const query = `CREATE TABLE IF NOT EXISTS Users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            login TEXT NOT NULL,
+            password TEXT NOT NULL,
+            email TEXT
         )`;
-        await this.db.exec(query);
+        try {
+            await this.db.exec(query);
+        } catch (error) {
+            console.error("Ошибка при создании таблицы Users:", error);
+        }
     }
 
-    addUser = async (login, password, email='') => {
-        let query = `INSERT INTO Users (login, password, email) VALUES (
-            ?, ?, ?)`;
+    async addUser(login, password, email = '') {
+        const query = `INSERT INTO Users (login, password, email) VALUES (?, ?, ?)`;
         try {
             const result = await this.db.run(query, login, password, email);
             const userId = result.lastID; // Получение идентификатора добавленного пользователя
             return userId;
+        } catch (error) {
+            console.error("Ошибка при добавлении пользователя:", error);
+            throw error;
         }
-        catch { 
-            log("Такой пользователь уже есть"); 
-        } 
     }
 
-    getUser = async (id) =>{
-        let query = `SELECT * FROM Users WHERE id=?`;
-        try { return await this.db.all(query, id); }
-        catch {
-             log("Что-то не так с запросом getEvent"); 
-             return false;
+    async getUser(id) {
+        const query = `SELECT * FROM Users WHERE id=?`;
+        try {
+            return await this.db.get(query, id);
+        } catch (error) {
+            console.error("Ошибка при получении пользователя:", error);
+            return false;
         }
     }
 }
