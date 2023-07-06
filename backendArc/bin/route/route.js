@@ -13,11 +13,11 @@ export class Router {
         // 
     }
 
-    start() {
+    async start() {
         this.server = this.app.listen(this.config.port, () => {
             console.log("Server started at", this.config.port);
         });
-        this.createRoutes();
+        await this.createRoutes();
         this.app.use(express.static(path.join(process.cwd(), 'public')));
     }
 
@@ -25,18 +25,18 @@ export class Router {
         this.server.close();
     }
 
-    createRoutes() {
+    async createRoutes() {
         this.app.get("/", this.controller.mainUserPage,
                           this.controller.mainGeneralPage);
 
         this.app.get("/register", this.controller.mainUserPage,
-                                  this.controller.registrationPage);
+                                  await this.controller.registrationPage);
 
         this.app.get("/login", this.controller.mainUserPage,
                                this.controller.loginPage);
 
         this.app.post("/confirm", this.controller.mainUserPage,
-                                  this.controller.checkCaptcha,
+                                  await this.controller.checkCaptcha,
                                   this.controller.confirmPage);
 
         this.app.post("/confirmed", this.controller.mainUserPage,

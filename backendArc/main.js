@@ -2,7 +2,7 @@ import {Application} from "./bin/app.js";
 
 const config = {
     database: {
-        file: "database.sdb"
+        file: './data.sql3'
     },
     server: {
         port: 3000

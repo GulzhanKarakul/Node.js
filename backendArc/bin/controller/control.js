@@ -9,10 +9,10 @@ export class Controller {
         this.dir = process.cwd();
     }
 
-    mainUserPage = (req, res, next) => {
+    mainUserPage = async (req, res, next) => {
         let sid = this.getSid(req);
         if (sid && this.service.isLogged(sid)) {
-            const userData = this.service.getUserData(sid);
+            const userData = await this.service.getUserData(sid);
             const fname = path.join(this.dir, 'public', 'user.html');
             fs.readFile(fname, 'utf-8', (err, data) => {
                 if (data) {
@@ -80,13 +80,13 @@ export class Controller {
         res.sendFile(fname);
     }
 
-    checkCaptcha = (req, res, next) => {
+    checkCaptcha = async (req, res, next) => {
         const sid = this.getSid(req);
         const login = req.body['login'];  // input name='login' в форме регистрации
         const passw = req.body['passw'];
         const email = req.body['email'];
         const captcha = req.body['captcha'];
-        const isOk = this.service.checkCaptcha(sid, login, passw, email, captcha);
+        const isOk = await this.service.checkCaptcha(sid, login, passw, email, captcha);
         if (isOk) {
             next();
         } else {

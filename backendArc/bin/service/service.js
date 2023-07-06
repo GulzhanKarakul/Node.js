@@ -1,5 +1,6 @@
 import { SessionService } from './session.js';
 import { CaptchaService  } from './captcha.js';
+import path from "path";
 
 export class Service {
     sessions = {};
@@ -19,9 +20,9 @@ export class Service {
         return session?.step === 'logged';
     }
 
-    getUserData = (sid) => {
+    getUserData = async (sid) => {
         let session = this.sessions[sid];
-        let data = this.dataStorage.getUser(session.userId);
+        let data = await this.dataStorage.getUser(session.userId);
         return data;
     }
 
@@ -47,16 +48,16 @@ export class Service {
         let session =this.sessions[sid];
         let captchaUrl = `captcha/${sid}.png`;
         session.captcha.file = path.join(process.cwd(), 'public', 'captcha', `${sid}.png`);
-        session.captcha.value = await this.captcha.create(session.captcha.file);
+        session.captcha.value = await this.captcha.create(captchaUrl);
         this.sessions[sid] = session;
         console.log(this.sessions);
         return captchaUrl;
     }
 
-    checkCaptcha = (sid, login, passw, email, captcha) => {
-        let session = this.sessions[sid];
+    checkCaptcha = async (sid, login, passw, email, captcha) => {
+        let session = this.sessions[sid]
         if (session.captcha.value === captcha) {
-            session.userId = this.dataStorage.addUser(login, passw, email);
+            session.userId = await this.dataStorage.addUser(login, passw, email);
             this.captcha.remove(session.captcha.file);
             session.captcha.value = null;
         }

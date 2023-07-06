@@ -1,4 +1,5 @@
 import { Database } from 'sqlite-async';
+const log = console.log;
 
 export class DataStorage {
     constructor(databaseFile) {
@@ -24,7 +25,7 @@ export class DataStorage {
         await this.db.exec(query);
     }
 
-    async addUser(login, password, email='') {
+    addUser = async (login, password, email='') => {
         let query = `INSERT INTO Users (login, password, email) VALUES (
             ?, ?, ?)`;
         try {
@@ -37,7 +38,7 @@ export class DataStorage {
         } 
     }
 
-    async getUser(id){
+    getUser = async (id) =>{
         let query = `SELECT * FROM Users WHERE id=?`;
         try { return await this.db.all(query, id); }
         catch {

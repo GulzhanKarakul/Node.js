@@ -13,11 +13,13 @@ export class Application {
         this.router = new Router(this.controller, this.config.server);
     }
 
-    start() {
-        this.router.start();
+    async start() {
+        await this.router.start();
+        await this.dataStorage.start();
     }
 
-    stop() {
+    async stop() {
         this.router.stop();
+        await this.dataStorage.stop();
     }
 }
