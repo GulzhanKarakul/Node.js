@@ -1,7 +1,7 @@
-import Router from "./route/route.js";
-import Controller from "./controller/control.js";
-import Service from "./service/service.js";
-import DataStorage from "./datastorage/datastorage.js";
+import { Router } from "./route/route.js";
+import { Controller } from "./controller/control.js";
+import { Service } from "./service/service.js";
+import { DataStorage } from "./datastorage/datastorage.js";
 
 export class Application {
     config = null;

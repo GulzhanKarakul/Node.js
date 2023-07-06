@@ -2,14 +2,14 @@ import path from 'path';
 import fs from 'fs';
 
 export class Controller {
-    sidAge = 220;
+    sidAge = 120;
 
     constructor(service) {
         this.service = service;
         this.dir = process.cwd();
     }
 
-    mainUserPage(req, res, next) {
+    mainUserPage = (req, res, next) => {
         let sid = this.getSid(req);
         if (sid && this.service.isLogged(sid)) {
             const userData = this.service.getUserData(sid);
@@ -27,12 +27,12 @@ export class Controller {
         }
     }
 
-    getSid(req) {
+    getSid = (req) => {
         const cookies = getCookies(req.header("Cookie"));
         return cookies.sid;
     }
 
-    checkSid(req, res, step) {
+    checkSid = (req, res, step) => {
         let sid = this.getSid(req);
         if (!sid) {
             sid = this.service.newSid(this.sidAge);
@@ -41,38 +41,47 @@ export class Controller {
         this.service.updateSession(sid, step);
     }
 
-    mainGeneralPage(req, res) {
+    mainGeneralPage = (req, res) => {
         this.checkSid(req, res, 'index');
         const fname = path.join(this.dir, 'public', 'index.html');
         res.sendFile(fname);
     }
 
-    registrationPage(req, res) {
+    registrationPage = async (req, res) => {
         this.checkSid(req, res, 'registration');
+        const sid = this.getSid(req);
+        const captcha = await this.service.newCaptcha(sid);
+        let captchaFile = `captcha/${captcha}`;
         const fname = path.join(this.dir, 'public', 'register.html');
-        res.sendFile(fname);
-
+        fs.readFile(fname, 'utf-8', (err, data) => {
+            if (data) {
+                const html = data.replace('%src%', captchaFile);
+                res.status(200).send(html);
+            } else {
+                res.status(404).send("<h2>Page not found :(</h2>");
+            }
+        });
     }
 
-    loginPage(req, res) {
+    loginPage = (req, res) => {
         this.checkSid(req, res, 'login');
         const fname = path.join(this.dir, 'public', 'login.html');
         res.sendFile(fname);
     }
 
-    confirmPage(req, res) {
+    confirmPage = (req, res) => {
         this.checkSid(req, res, 'confirm');
         const fname = path.join(this.dir, 'public', 'confirm.html');
         res.sendFile(fname);
     }
 
-    redirToUserPage(req, res) {
+    redirToUserPage = (req, res) => {
         this.checkSid(req, res, 'logged');
         const fname = path.join(this.dir, 'public', 'redirToUser.html');
         res.sendFile(fname);
     }
 
-    checkCaptcha(req, res, next) {
+    checkCaptcha = (req, res, next) => {
         const sid = this.getSid(req);
         const login = req.body['login'];  // input name='login' в форме регистрации
         const passw = req.body['passw'];
@@ -86,7 +95,7 @@ export class Controller {
         }
     }
 
-    checkConfirmCode(req, res, next) {
+    checkConfirmCode = (req, res, next) => {
         const sid = this.getSid(req);
         const code = req.body['confirmCode'];
         const isOk = this.service.checkConfirmCode(sid, code);
@@ -100,10 +109,12 @@ export class Controller {
 
 function getCookies(cookieString) {
     let cookies = {};
-    const cookieArray = cookieString.split(';');
-    for (let x of cookieArray) {
-        const [key, value] = x.trim().split('=');
-        cookies[key] = value; 
+    if(cookieString) {
+        const cookieArray = cookieString.split(';');
+        for (let x of cookieArray) {
+            const [key, value] = x.trim().split('=');
+            cookies[key] = value; 
+        }
     }
     return cookies;
 }

@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import path from 'path';
 
 export class Router {
     constructor(controller, config) {
@@ -7,13 +8,16 @@ export class Router {
         this.config = config;
         this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
+        // Виталий, когда подключаю че то перестала вообще грузится страница
+        // К тому же выходит ошибка будто я пытаюсь импортировать файл который нельзя импортировать!!!!!!!!!!
+        // this.app.use(express.static(path.join(process.cwd(), 'public')));
     }
 
     start() {
-        this.server = this.app.listen(this.config.port, ()=>{
+        this.server = this.app.listen(this.config.port, () => {
             console.log("Server started at", this.config.port);
         });
-        this.createRoutes()
+        this.createRoutes();
     }
 
     stop() {
@@ -37,6 +41,5 @@ export class Router {
         this.app.post("/confirmed", this.controller.mainUserPage,
                                     this.controller.checkConfirmCode,
                                     this.controller.redirToUserPage);
-
     }
 }

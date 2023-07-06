@@ -1,4 +1,4 @@
-export class Session {
+export class SessionService {
     constructor(expired) {
         this.step = 'index';
         this.userId = null;
@@ -7,7 +7,7 @@ export class Session {
         this.expired.setSeconds( this.expired.getSeconds() + expired );
     }
 
-    static newSid(sessionsTotal) {
+    newSid = (sessionsTotal) => {
         let time = new Date().getTime();
         let salt = Math.trunc(Math.random() * 1000000000);
         return salt.toString(16) + sessionsTotal.toString(16) + time.toString(16);
