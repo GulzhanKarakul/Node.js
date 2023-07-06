@@ -10,7 +10,7 @@ export class Router {
         this.app.use(bodyParser.urlencoded({ extended: false }));
         // Виталий, когда подключаю че то перестала вообще грузится страница
         // К тому же выходит ошибка будто я пытаюсь импортировать файл который нельзя импортировать!!!!!!!!!!
-        // this.app.use(express.static(path.join(process.cwd(), 'public')));
+        // 
     }
 
     start() {
@@ -18,6 +18,7 @@ export class Router {
             console.log("Server started at", this.config.port);
         });
         this.createRoutes();
+        this.app.use(express.static(path.join(process.cwd(), 'public')));
     }
 
     stop() {

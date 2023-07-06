@@ -45,11 +45,12 @@ export class Service {
 
     newCaptcha = async (sid) => {
         let session =this.sessions[sid];
-        session.captcha.file = sid + '.png';
+        let captchaUrl = `captcha/${sid}.png`;
+        session.captcha.file = path.join(process.cwd(), 'public', 'captcha', `${sid}.png`);
         session.captcha.value = await this.captcha.create(session.captcha.file);
         this.sessions[sid] = session;
         console.log(this.sessions);
-        return session.captcha.file;
+        return captchaUrl;
     }
 
     checkCaptcha = (sid, login, passw, email, captcha) => {

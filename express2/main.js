@@ -1,8 +1,7 @@
 import { Server } from './bin/server.js';
-const __dir = process.cwd();
-console.log(__dir);
+
 // Подключаю и запускаю сервер
-let server = new Server(__dir);
+let server = new Server();
 server.start(3000);
 
 

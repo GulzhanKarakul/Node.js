@@ -51,11 +51,10 @@ export class Controller {
         this.checkSid(req, res, 'registration');
         const sid = this.getSid(req);
         const captcha = await this.service.newCaptcha(sid);
-        let captchaFile = `captcha/${captcha}`;
         const fname = path.join(this.dir, 'public', 'register.html');
         fs.readFile(fname, 'utf-8', (err, data) => {
             if (data) {
-                const html = data.replace('%src%', captchaFile);
+                const html = data.replace('%src%', captcha);
                 res.status(200).send(html);
             } else {
                 res.status(404).send("<h2>Page not found :(</h2>");
