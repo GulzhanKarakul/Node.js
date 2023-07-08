@@ -1,6 +1,7 @@
 export class SID {
     constructor() {
         this.sessions = {};
+        this.sidAge = 220;
     }
     // Функция для создания уникального Session ID
     getSID = () => {
