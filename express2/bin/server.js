@@ -4,17 +4,14 @@ import { CaptchaService } from './capcha.js'
 import bodyParser from "body-parser";
 import fs from 'fs'; 
 import path from "path";
-const log = console.log;
 
 export class Server {
     constructor() {
-        this.dir = process.cwd();
         this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
-        // 
+        // Добавляю SID и captcha
         this.SID = new SID();
         this.captcha = new CaptchaService();
-        this.result = [];
     }
 
     start(PORT) {
@@ -44,7 +41,7 @@ export class Server {
         this.app.get('/register', async (req, res) => {
             let sid = this.SID.checkSid(req, res);
             let captcha = await this.captcha.createCaptcha(sid);
-            const fname = path.join(this.dir, 'public', 'register.html');
+            const fname = path.join(process.cwd(), 'public', 'register.html');
             fs.readFile(fname, 'utf-8', (err, data) => {
                 this.captcha.addCaptcha(req, res,sid, data);
             });
