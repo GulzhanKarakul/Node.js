@@ -17,16 +17,16 @@ export class CaptchaService {
         const captchaObject = { value: captcha.value, file: captchaFile, url: captchaUrl };
         this.captchas[sid] = captchaObject;
         let captchaOut = fs.createWriteStream(captchaFile);
-        captcha.PNGStream.pipe(captchaOut); // Перенаправление потока CAPTCHA в файл
+        captcha.PNGStream.pipe(captchaOut); 
         captchaOut.on('finish', () => {
-            console.log('finish' + captchaObject);
+            console.log('finish ');
+            console.log(captchaObject);
         });
         return await captchaObject;
     }
 
     addCaptcha(req, res, sid, data) {
         const captchaObj = this.captchas[sid];
-        console.log(captchaObj);
         if (data) {
             const html = data.replace('%src%', captchaObj.url);
             res.status(200).send(html);
@@ -35,10 +35,10 @@ export class CaptchaService {
         }
     }
       
-
-    remove(filename) {
-        const captchaFile = path.join(process.cwd(), 'public', 'captcha', filename);
+    remove(captchaFile) {
+        // Метод для проверки есть ли такой файл        
         if (fs.existsSync(captchaFile)) {
+            // метод unlink для удаления файла
             fs.unlinkSync(captchaFile);
             return true;
         }

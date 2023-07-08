@@ -5,13 +5,7 @@ import bodyParser from "body-parser";
 import fs from 'fs'; 
 import path from "path";
 const log = console.log;
-// let sessions = {};
-// let sid = getSID();
-// sessions[sid] = new Session(sid);
 
-// const captcha = new Captcha.default();
-// captcha.PNGStream.pipe(fs.createWriteStream(path.join('captcha', `${captcha.value}.png`)));
-// captcha.JPEGStream.pipe(fs.createWriteStream(path.join('captcha', `${captcha.value}.jpeg`)));
 export class Server {
     constructor() {
         this.dir = process.cwd();
@@ -52,7 +46,7 @@ export class Server {
             let captcha = await this.captcha.createCaptcha(sid);
             const fname = path.join(this.dir, 'public', 'register.html');
             fs.readFile(fname, 'utf-8', (err, data) => {
-                this.captcha.addCaptcha(req, res,sid, data, captcha);
+                this.captcha.addCaptcha(req, res,sid, data);
             });
         });
     }
@@ -63,39 +57,93 @@ export class Server {
             res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
         });
 
-        this.app.post('/confirm', (req, res) => {
+        this.app.post('/confirm', async (req, res) => {
             let sid = this.checkSid(req, res);
             let captchas = this.captcha.captchas;
             if (sid) {
-                this.result.push(req.body['userName']);
-                this.result.push(req.body['password']);
-                this.result.push(req.body['userEmail']);
-
-                log(this.result);
-                console.log(captchas[sid].value); // Вывод значения CAPTCHA для отладки
-                let solved = captchas[sid].value === req.body['captcha']; // Сравнение введенного значения CAPTCHA с сохраненным значением
+                let solved = captchas[sid].value === req.body['captcha'];
+                await this.solved(req, res, solved);
                 if (captchas[sid].file) {
-                    fs.rm(captchas[sid].file, err => console.log(err)); // Удаление файла CAPTCHA
+                    this.captcha.remove(captchas[sid].file);
                     captchas[sid].value = null; // Сброс значения CAPTCHA
                     captchas[sid].file = null; // Сброс пути файла CAPTCHA
-                    captchas[sid].url = null; // Сброс пути файла CAPTCHA
-                }
-                let fname = path.join(process.cwd(), 'public', 'confirm.html');
-                fs.readFile(fname, 'utf-8', (err, data) => {
-                    if (data) {
-                        const html = data.replace('%conf%', 'CONFIRMED');
-                        res.status(200).send(html);
-                    } else {
-                        res.status(404).send("<h2>Page not found :(</h2>");
-                    }
-                });
+                    captchas[sid].url = null; // Сброс url файла CAPTCHA
+                } 
             } 
-            
         });
 
         this.app.post('/confirmed', (req, res) => {
             let sid = this.checkSid(req, res);
             const fname = path.join(process.cwd(), 'public','index-in.html');
+        });
+    }
+
+    solved = async (req, res, solv) => {
+        if(solv) {
+            let resultUser = {userName: req.body['userName'], password: req.body['password'], userEmail: req.body['userEmail']}
+            this.writeData(resultUser);
+
+            let fname = path.join(process.cwd(), 'public', 'confirm.html');
+                fs.readFile(fname, 'utf-8', (err, data) => {
+                    if (data) {
+                        const html = data.replace('%conf%', 'SOLVED');
+                        res.status(200).send(html);
+                    } else {
+                        res.status(404).send("<h2>Page not found :(</h2>");
+                    }
+                });
+        } else {
+            let sid = this.checkSid(req, res);
+            let captcha = await this.captcha.createCaptcha(sid);
+            let oneMoreTry =  "<h2>Ошибка ввода данных</h2>";
+            let fname = path.join(process.cwd(), 'public', 'register.html');
+            fs.readFile(fname, 'utf-8', (err, data) => {
+                if (data) {
+                    const destination = data.lastIndexOf('<div class="block">');
+                    const html = data.slice(0, destination) + oneMoreTry + data.slice(destination);
+                    this.captcha.addCaptcha(req, res,sid, html);
+                    res.status(200).send(html);
+                } else {
+                    res.status(404).send("<h2>Page not found :(</h2>");
+                }
+            });
+        }
+    }
+
+    writeData(result) {
+        const filePath = 'bin/data/data.json'; // Путь к файлу data.json
+
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                console.error(`Ошибка при чтении файла: ${err}`);
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(data); // Преобразование содержимого файла в объект JSON
+
+                if (!jsonData.hasOwnProperty('users')) {
+                    // Если поле 'users' отсутствует, создаем его как массив и добавляем текущий результат
+                    jsonData.users = [result];
+                } else if (Array.isArray(jsonData.users)) {
+                    // Если поле 'users' уже является массивом, добавляем текущий результат в конец массива
+                    jsonData.users.push(result);
+                } else {
+                    // Если поле 'users' существует, но не является массивом, создаем новый массив и добавляем текущий результат
+                    jsonData.users = [jsonData.users, result];
+                }
+
+                fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
+                if (err) {
+                    console.error(`Ошибка при записи в файл: ${err}`);
+                    return;
+                }
+
+                console.log('Результат успешно добавлен в объект users в файле data.json');
+                });
+            } catch (error) {
+                console.error(`Ошибка при обработке JSON: ${error}`);
+            }
         });
     }
 

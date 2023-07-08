@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "userName": "Гульжан",
+      "password": "123",
+      "userEmail": "karakulgulzhan@gmail.com"
+    },
+    {
+      "userName": "Gulzhan",
+      "password": "12",
+      "userEmail": "karakulgulzhan@gmail.com"
+    }
+  ]
+}
