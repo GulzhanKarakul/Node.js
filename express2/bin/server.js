@@ -20,6 +20,7 @@ export class Server {
         // 
         this.SID = new SID();
         this.captcha = new CaptchaService();
+        this.result = [];
     }
 
     start(PORT) {
@@ -37,21 +38,17 @@ export class Server {
 
     get = () => {
         this.app.get('/', (req, res) => {
-            let sid = this.getSid(req);
-            if (!sid) {
-                sid = this.SID.createSession();
-                res.setHeader('Set-Cookie', `sid=${sid}; Max-Age=${this.sidAge}; HttpOnly`);
-            }
+            let sid = this.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
         });
 
         this.app.get('/login', (req, res) => {
-            let sid = getSid(req);
+            let sid = this.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
         });
 
         this.app.get('/register', async (req, res) => {
-            let sid = this.getSid(req);
+            let sid = this.checkSid(req, res);
             let captcha = await this.captcha.createCaptcha(sid);
             const fname = path.join(this.dir, 'public', 'register.html');
             fs.readFile(fname, 'utf-8', (err, data) => {
@@ -62,19 +59,43 @@ export class Server {
 
     post = () => {
         this.app.post('/login', (req, res) => {
-            let cookies = this.getCookies(req.header("Cookies"));
-            log('cookies: ' + cookies);
+            let sid = this.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
         });
 
         this.app.post('/confirm', (req, res) => {
-            let cookies = this.getCookies(req.header("Cookies"));
-            res.sendFile(path.join(process.cwd(), 'public', 'confirm.html'));
+            let sid = this.checkSid(req, res);
+            let captchas = this.captcha.captchas;
+            if (sid) {
+                this.result.push(req.body['userName']);
+                this.result.push(req.body['password']);
+                this.result.push(req.body['userEmail']);
+
+                log(this.result);
+                console.log(captchas[sid].value); // Вывод значения CAPTCHA для отладки
+                let solved = captchas[sid].value === req.body['captcha']; // Сравнение введенного значения CAPTCHA с сохраненным значением
+                if (captchas[sid].file) {
+                    fs.rm(captchas[sid].file, err => console.log(err)); // Удаление файла CAPTCHA
+                    captchas[sid].value = null; // Сброс значения CAPTCHA
+                    captchas[sid].file = null; // Сброс пути файла CAPTCHA
+                    captchas[sid].url = null; // Сброс пути файла CAPTCHA
+                }
+                let fname = path.join(process.cwd(), 'public', 'confirm.html');
+                fs.readFile(fname, 'utf-8', (err, data) => {
+                    if (data) {
+                        const html = data.replace('%conf%', 'CONFIRMED');
+                        res.status(200).send(html);
+                    } else {
+                        res.status(404).send("<h2>Page not found :(</h2>");
+                    }
+                });
+            } 
+            
         });
 
         this.app.post('/confirmed', (req, res) => {
-            let cookies = this.getCookies(req.header("Cookies"));
-            res.sendFile(path.join(process.cwd(), 'public','index-in.html'));
+            let sid = this.checkSid(req, res);
+            const fname = path.join(process.cwd(), 'public','index-in.html');
         });
     }
 
@@ -93,5 +114,14 @@ export class Server {
     getSid = (req) => {
         const cookies = this.getCookies(req.header("Cookie"));
         return cookies.sid;
+    }
+
+    checkSid = (req, res, step) => {
+        let sid = this.getSid(req);
+        if (!sid) {
+            sid = this.service.newSid(this.sidAge);
+            res.setHeader('Set-Cookie', `sid=${sid}; Max-Age=${this.sidAge}; HttpOnly`);
+        }
+        return sid;
     }
 }
