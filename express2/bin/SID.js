@@ -13,7 +13,7 @@ export class SID {
     createSession = () => {
         const sessionId = this.getSID();
         console.log("  New SID =", sessionId);
-        this.sessions[sessionId] = {};
+        this.sessions[sessionId] =  {captcha: {value: '', file: ''}}
         return sessionId;
     }
 

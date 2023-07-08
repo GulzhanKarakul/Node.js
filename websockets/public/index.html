@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .cont {
+            width: 1200px;
+            margin: 0px auto;
+            background: #f49cdc;
+            text-align: center;
+        }
+       .display {
+        width: 1000px;
+        margin: 50px auto;
+        height: 500px;
+        background: #63d4e0;
+        color: #fff;
+        font-size: 22px;
+       }
+       .prety{
+        margin: 20px;
+        background: #a942f3;
+        display: flex;
+       }
+       #message {
+        width: 80%;
+       }
+       input {
+        padding: 7px 20px;
+        margin: 5px;
+        background: #f49cdc;
+       }
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <h1>Chat BOT</h1>
+        <div class="display"></div>
+        <div class="prety">
+            <input type="text" id="message">
+            <input type="submit" value="Send" id="btn">
+        </div>
+        
+       
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js" integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="index.js"></script>
+</body>
+</html>
