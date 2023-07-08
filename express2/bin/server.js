@@ -80,6 +80,7 @@ export class Server {
 
     solved = async (req, res, solv) => {
         if(solv) {
+            // Я не стала делать проверку на входные данные, я думаю это по факту работа фронта))))
             let resultUser = {userName: req.body['userName'], password: req.body['password'], userEmail: req.body['userEmail']}
             this.writeData(resultUser);
 
