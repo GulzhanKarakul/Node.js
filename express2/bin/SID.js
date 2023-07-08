@@ -26,4 +26,30 @@ export class SID {
     deleteSession = (sessionId) => {
         delete this.sessions[sessionId];
     }
+
+    getCookies(cookieString) {
+        let cookies = {};
+        if(cookieString) {
+            const cookieArray = cookieString.split(';');
+            for (let x of cookieArray) {
+                const [key, value] = x.trim().split('=');
+                cookies[key] = value; 
+            }
+        }
+        return cookies;
+    }
+
+    getSid = (req) => {
+        const cookies = this.getCookies(req.header("Cookie"));
+        return cookies.sid;
+    }
+
+    checkSid = (req, res, step) => {
+        let sid = this.getSid(req);
+        if (!sid) {
+            sid = this.service.newSid(this.sidAge);
+            res.setHeader('Set-Cookie', `sid=${sid}; Max-Age=${this.sidAge}; HttpOnly`);
+        }
+        return sid;
+    }
 }

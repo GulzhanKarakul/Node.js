@@ -9,6 +9,11 @@
       "userName": "Gulzhan",
       "password": "12",
       "userEmail": "karakulgulzhan@gmail.com"
+    },
+    {
+      "userName": "Dima",
+      "password": "123",
+      "userEmail": "dimapan@gmail.com"
     }
   ]
 }

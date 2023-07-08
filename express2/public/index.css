@@ -2,7 +2,9 @@
     margin: 0;
     padding: 0;
 }
-
+h2 {
+    margin: 20px 0;
+}
 body {
     background: #5c9df6;
     text-align: center;

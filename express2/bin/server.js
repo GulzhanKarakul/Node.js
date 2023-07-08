@@ -32,17 +32,17 @@ export class Server {
 
     get = () => {
         this.app.get('/', (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
         });
 
         this.app.get('/login', (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
         });
 
         this.app.get('/register', async (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             let captcha = await this.captcha.createCaptcha(sid);
             const fname = path.join(this.dir, 'public', 'register.html');
             fs.readFile(fname, 'utf-8', (err, data) => {
@@ -53,12 +53,12 @@ export class Server {
 
     post = () => {
         this.app.post('/login', (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
         });
 
         this.app.post('/confirm', async (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             let captchas = this.captcha.captchas;
             if (sid) {
                 let solved = captchas[sid].value === req.body['captcha'];
@@ -73,7 +73,7 @@ export class Server {
         });
 
         this.app.post('/confirmed', (req, res) => {
-            let sid = this.checkSid(req, res);
+            let sid = this.SID.checkSid(req, res);
             const fname = path.join(process.cwd(), 'public','index-in.html');
         });
     }
@@ -93,20 +93,7 @@ export class Server {
                     }
                 });
         } else {
-            let sid = this.checkSid(req, res);
-            let captcha = await this.captcha.createCaptcha(sid);
-            let oneMoreTry =  "<h2>Ошибка ввода данных</h2>";
-            let fname = path.join(process.cwd(), 'public', 'register.html');
-            fs.readFile(fname, 'utf-8', (err, data) => {
-                if (data) {
-                    const destination = data.lastIndexOf('<div class="block">');
-                    const html = data.slice(0, destination) + oneMoreTry + data.slice(destination);
-                    this.captcha.addCaptcha(req, res,sid, html);
-                    res.status(200).send(html);
-                } else {
-                    res.status(404).send("<h2>Page not found :(</h2>");
-                }
-            });
+            res.sendFile(path.join(process.cwd(), 'public', 'errorRegistration.html'));
         }
     }
 
@@ -145,31 +132,5 @@ export class Server {
                 console.error(`Ошибка при обработке JSON: ${error}`);
             }
         });
-    }
-
-    getCookies(cookieString) {
-        let cookies = {};
-        if(cookieString) {
-            const cookieArray = cookieString.split(';');
-            for (let x of cookieArray) {
-                const [key, value] = x.trim().split('=');
-                cookies[key] = value; 
-            }
-        }
-        return cookies;
-    }
-
-    getSid = (req) => {
-        const cookies = this.getCookies(req.header("Cookie"));
-        return cookies.sid;
-    }
-
-    checkSid = (req, res, step) => {
-        let sid = this.getSid(req);
-        if (!sid) {
-            sid = this.service.newSid(this.sidAge);
-            res.setHeader('Set-Cookie', `sid=${sid}; Max-Age=${this.sidAge}; HttpOnly`);
-        }
-        return sid;
     }
 }
