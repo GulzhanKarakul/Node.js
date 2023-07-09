@@ -14,6 +14,11 @@
       "userName": "Dima",
       "password": "123",
       "userEmail": "dimapan@gmail.com"
+    },
+    {
+      "userName": "Гульжан",
+      "password": "12345",
+      "userEmail": "karakulgulzhan@gmail.com"
     }
   ]
 }

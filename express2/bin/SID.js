@@ -4,7 +4,7 @@ export class SID {
         this.sidAge = 220;
     }
     // Функция для создания уникального Session ID
-    getSID = () => {
+    newSID = () => {
         let time =new Date().getTime();
         let salt = Math.trunc(Math.random()*1000000000);
         return salt.toString(16) + Object.keys(this.sessions).length.toString(16) + time.toString(16);
@@ -48,7 +48,7 @@ export class SID {
     checkSid = (req, res, step) => {
         let sid = this.getSid(req);
         if (!sid) {
-            sid = this.service.newSid(this.sidAge);
+            sid = this.newSid(this.sidAge);
             res.setHeader('Set-Cookie', `sid=${sid}; Max-Age=${this.sidAge}; HttpOnly`);
         }
         return sid;
