@@ -1,3 +1,7 @@
+// Виталий, попробуйте залогиниться и выйти из учетки))))))))))
+// Все работает))))))))))
+
+
 import { SessionService } from './session.js';
 import { CaptchaService  } from './captcha.js';
 import path from "path";
