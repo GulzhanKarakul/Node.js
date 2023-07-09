@@ -101,6 +101,12 @@ export class Controller {
         res.sendFile(fname);
     }
 
+    redirToGeneralPage = (req, res) => {
+        this.checkSid(req, res, 'index');
+        const fname = path.join(this.dir, 'public', 'resources', 'redirToMain.html');
+        res.sendFile(fname);
+    }
+
     checkCaptcha = async (req, res, next) => {
         const sid = this.getSid(req);
         const login = req.body['login'];  // input name='login' в форме регистрации

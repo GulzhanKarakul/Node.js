@@ -45,6 +45,6 @@ export class Router {
                                     this.controller.redirToUserPage);
 
         this.app.get("/logout",    this.controller.logOutUser,
-                                    this.controller.mainGeneralPage);
+                                    this.controller.redirToGeneralPage);
     }
 }
