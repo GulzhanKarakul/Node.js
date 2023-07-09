@@ -1,7 +1,7 @@
-import { Router } from "./route/route.js";
-import { Controller } from "./controller/control.js";
-import { Service } from "./service/service.js";
-import { DataStorage } from "./datastorage/datastorage.js";
+import {Router} from "./route/route.js";
+import {Controller} from "./controller/control.js";
+import {Service} from "./service/service.js";
+import {DataStorage} from "./datastorage/datastorage.js";
 
 export class Application {
     config = null;
@@ -13,13 +13,13 @@ export class Application {
         this.router = new Router(this.controller, this.config.server);
     }
 
-    async start() {
-        await this.router.start();
-        await this.dataStorage.start();
+    start() {
+        this.router.start();
+        this.dataStorage.start();
     }
 
-    async stop() {
+    stop() {
         this.router.stop();
-        await this.dataStorage.stop();
+        this.dataStorage.stop();
     }
 }

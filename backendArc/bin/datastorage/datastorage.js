@@ -26,11 +26,11 @@ export class DataStorage {
     }
 
     async createUsers() {
-        const query = `CREATE TABLE IF NOT EXISTS Users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            login TEXT NOT NULL,
-            password TEXT NOT NULL,
-            email TEXT
+        let query = `CREATE TABLE IF NOT EXISTS Users (
+            id              integer primary key autoincrement,
+            login           text not null,
+            password        text not null,
+            email           text
         )`;
         try {
             await this.db.exec(query);
@@ -39,11 +39,12 @@ export class DataStorage {
         }
     }
 
-    async addUser(login, password, email = '') {
-        const query = `INSERT INTO Users (login, password, email) VALUES (?, ?, ?)`;
+    addUser = async (login, password, email='') => {
+        let query = `INSERT INTO Users (login, password, email) VALUES (
+            ?, ?, ?)`;
         try {
             const result = await this.db.run(query, login, password, email);
-            const userId = result.lastID; // Получение идентификатора добавленного пользователя
+            const userId = result.lastID; 
             return userId;
         } catch (error) {
             console.error("Ошибка при добавлении пользователя:", error);
@@ -51,10 +52,21 @@ export class DataStorage {
         }
     }
 
-    async getUser(id) {
-        const query = `SELECT * FROM Users WHERE id=?`;
+    getUser = async (id) =>{
+        let query = `SELECT * FROM Users WHERE id=?`;
         try {
             return await this.db.get(query, id);
+        } catch (error) {
+            console.error("Ошибка при получении пользователя:", error);
+            return false;
+        }
+    }
+
+    getUserId = async (login, password) =>{
+        let query = `SELECT * FROM Users WHERE login=? AND password=?`;
+        try {
+            const data = await this.db.get(query, login, password);
+            return data.id;
         } catch (error) {
             console.error("Ошибка при получении пользователя:", error);
             return false;

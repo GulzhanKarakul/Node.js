@@ -21,8 +21,13 @@ export class CaptchaService {
         return  await captchaFinished;
     }
     
-    remove = (filename) => {
-        let captchaFile = path.join(process.cwd(), 'public','captcha',` ${filename}`); // Путь к файлу CAPTCHA
-        fs.rm(captchaFile);
+    remove = (captchaFile) => {
+        // Метод для проверки есть ли такой файл        
+        if (fs.existsSync(captchaFile)) {
+            // метод unlink для удаления файла
+            fs.unlinkSync(captchaFile);
+            return true;
+        }
+        return false;
     }
 }

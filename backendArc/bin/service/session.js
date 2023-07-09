@@ -3,6 +3,7 @@ export class SessionService {
         this.step = 'index';
         this.userId = null;
         this.captcha = {value: null, file: null};
+        this.confirmCode = null;
         this.expired = new Date();
         this.expired.setSeconds( this.expired.getSeconds() + expired );
     }

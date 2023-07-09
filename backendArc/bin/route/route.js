@@ -8,9 +8,6 @@ export class Router {
         this.config = config;
         this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
-        // Виталий, когда подключаю че то перестала вообще грузится страница
-        // К тому же выходит ошибка будто я пытаюсь импортировать файл который нельзя импортировать!!!!!!!!!!
-        // 
     }
 
     async start() {
@@ -35,12 +32,19 @@ export class Router {
         this.app.get("/login", this.controller.mainUserPage,
                                this.controller.loginPage);
 
+        this.app.post("/log",   this.controller.mainUserPage,
+                               await this.controller.checkloginData,
+                               this.controller.redirToUserPage);
+
         this.app.post("/confirm", this.controller.mainUserPage,
                                   await this.controller.checkCaptcha,
                                   this.controller.confirmPage);
 
-        this.app.post("/confirmed", this.controller.mainUserPage,
+        this.app.post("/confirmed",      this.controller.mainUserPage,
                                     this.controller.checkConfirmCode,
                                     this.controller.redirToUserPage);
+
+        this.app.get("/logout",    this.controller.logOutUser,
+                                    this.controller.mainGeneralPage);
     }
 }
