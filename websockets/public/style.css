@@ -1,0 +1,28 @@
+
+.cont {
+    width: 1200px;
+    margin: 0px auto;
+    background: #f49cdc;
+    text-align: center;
+}
+.display {
+width: 1000px;
+margin: 50px auto;
+height: 500px;
+background: #63d4e0;
+color: #fff;
+font-size: 22px;
+}
+.prety{
+margin: 20px;
+background: #a942f3;
+display: flex;
+}
+#message {
+width: 80%;
+}
+input {
+padding: 7px 20px;
+margin: 5px;
+background: #f49cdc;
+}
